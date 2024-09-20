@@ -38,6 +38,40 @@ public class Player : MonoBehaviour
     {
         bool isJumping = !isGrounded && rb.velocity.y > 0;
 
+        Move();
+
+        //Jump
+        if (Input.GetKeyDown(KeyCode.Z) && isGrounded) //Jump
+        {
+            Jump();
+            anim.SetTrigger("Jump");
+            //anim.SetBool("isJump", !isGrounded);
+        }
+        /*if(Input.GetKeyDown(KeyCode.Z))
+        {
+            transform.Translate(Vector2.up * jumpForce);
+            anim.SetTrigger("Jump");
+        }*/
+    }
+
+    //땅에 닿았는지 확인하기 위해 충돌 처리
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.CompareTag("Platform"))
+        {
+            isGrounded = true; //땅에 닿으면 다시 점프 가능
+        }
+    }
+    void Jump()
+    {
+        //Rigidbody에 위로 힘을 가해 점프 처리
+        rb.AddForce(Vector3.up * jumpForce, ForceMode2D.Impulse);
+        isGrounded = false; //점프 후에는 땅에 있지 않음
+    }
+
+    void Move()
+    {
+
         //Move Speed
         if (Input.GetKey(KeyCode.RightArrow))
         {
@@ -67,34 +101,6 @@ public class Player : MonoBehaviour
             SpriteRenderer.flipX = true;
         if (Input.GetKey(KeyCode.RightArrow))
             SpriteRenderer.flipX = false;
-
-        //Jump
-        if (Input.GetKeyDown(KeyCode.Z) && isGrounded) //Jump
-        {
-            Jump();
-            anim.SetTrigger("Jump");
-            //anim.SetBool("isJump", !isGrounded);
-        }
-        /*if(Input.GetKeyDown(KeyCode.Z))
-        {
-            transform.Translate(Vector2.up * jumpForce);
-            anim.SetTrigger("Jump");
-        }*/
-    }
-
-    //땅에 닿았는지 확인하기 위해 충돌 처리
-    private void OnCollisionEnter2D(Collision2D collision)
-    {
-        if (collision.gameObject.CompareTag("Platform"))
-        {
-            isGrounded = true; //땅에 닿으면 다시 점프 가능
-        }
-    }
-    void Jump()
-    {
-        //Rigidbody에 위로 힘을 가해 점프 처리
-        rb.AddForce(Vector3.up * jumpForce, ForceMode2D.Impulse);
-        isGrounded = false; //점프 후에는 땅에 있지 않음
     }
 
 }
