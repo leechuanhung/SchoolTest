@@ -11,6 +11,7 @@ public class Player : MonoBehaviour
     Rigidbody2D rb;
     SpriteRenderer SpriteRenderer;
     Animator anim;
+    
 
     private void Awake()
     {
@@ -64,7 +65,15 @@ public class Player : MonoBehaviour
             isGrounded = true; //땅에 닿으면 다시 점프 가능
         }
         if(collision.gameObject.tag == "Enemy")
+        {
+            //Attack
+            if(rb.velocity.y <0 &&  transform.position.y > collision.transform.position.y)
+            {
+
+            }  //Damaged
             OnDamaged(collision.transform.position);
+
+        }
         
     }
     void Jump()
@@ -128,5 +137,12 @@ public class Player : MonoBehaviour
     {
         gameObject.layer = 10;
         SpriteRenderer.color = new Color(1, 1, 1, 1);
+    }
+
+    void OnAttack(Transform enemy)
+    {
+        //Enemy Die
+        Monster enemyMove = enemy.GetComponent<Monster>();
+        enemyMove.OnDamaged();
     }
 }

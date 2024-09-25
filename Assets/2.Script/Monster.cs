@@ -7,6 +7,7 @@ public class Monster : MonoBehaviour
     Rigidbody2D rigid;
     Animation anim;
     SpriteRenderer spriteRenderer;
+    BoxCollider2D colli;
 
     public int nextMove;
 
@@ -15,6 +16,7 @@ public class Monster : MonoBehaviour
         rigid = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animation>();
         spriteRenderer = GetComponent<SpriteRenderer>();
+        colli = GetComponent<BoxCollider2D>();
         Think();
 
         Invoke("Think", 2);
@@ -66,6 +68,25 @@ public class Monster : MonoBehaviour
 
         CancelInvoke();
         Invoke("Think", 2);
+    }
+
+    public void OnDamaged()
+    {
+        //Sprite Alpha
+        spriteRenderer.color = new Color(1, 1, 1, 0.59f);
+        //Sprite Flip Y
+        spriteRenderer.flipY = true;
+        // Collider Disable
+        colli.enabled = false;
+        //Die Effect Jump
+        rigid.AddForce(Vector2.up * 5, ForceMode2D.Impulse);
+        //Destroy
+        Invoke("DeActive", 5);
+    }
+
+    void DeActive()
+    {
+        gameObject.SetActive(false);
     }
 
 }
