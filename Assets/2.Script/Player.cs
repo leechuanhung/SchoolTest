@@ -6,6 +6,8 @@ public class Player : MonoBehaviour
     public float maxSpeed = 6f;
     private bool isGrounded = true;    // 플레이어가 땅에 닿아 있는지 확인
     public float Speed = 5f;    //움직이는 힘
+    
+
     Rigidbody2D rb;
     SpriteRenderer SpriteRenderer;
     Animator anim;
@@ -19,7 +21,7 @@ public class Player : MonoBehaviour
 
     private void Start()
     {
-
+        
     }
 
     private void FixedUpdate()
@@ -55,12 +57,15 @@ public class Player : MonoBehaviour
     }
 
     //땅에 닿았는지 확인하기 위해 충돌 처리
-    private void OnCollisionEnter2D(Collision2D collision)
+    void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.gameObject.CompareTag("Platform"))
         {
             isGrounded = true; //땅에 닿으면 다시 점프 가능
         }
+        if(collision.gameObject.tag == "Enemy")
+            OnDamaged(collision.transform.position);
+        
     }
     void Jump()
     {
@@ -68,6 +73,7 @@ public class Player : MonoBehaviour
         rb.AddForce(Vector3.up * jumpForce, ForceMode2D.Impulse);
         isGrounded = false; //점프 후에는 땅에 있지 않음
     }
+
 
     void Move()
     {
@@ -77,12 +83,14 @@ public class Player : MonoBehaviour
         {
             transform.Translate(Vector2.right * Speed * Time.deltaTime);
             anim.SetBool("Run", true);
+            
 
         }
         else if (Input.GetKey(KeyCode.LeftArrow))
         {
             transform.Translate(Vector2.left * Speed * Time.deltaTime);
             anim.SetBool("Run", true);
+            
 
         }
         else
@@ -102,5 +110,23 @@ public class Player : MonoBehaviour
         if (Input.GetKey(KeyCode.RightArrow))
             SpriteRenderer.flipX = false;
     }
+   
+    void OnDamaged(Vector2 targetPos)
+    {
+        gameObject.layer = 11;
 
+        SpriteRenderer.color = new Color(1, 1, 1, 0.59f);
+
+        int dirc = transform.position.x - targetPos.x > 0 ? 1 : -1;
+        rb.AddForce(new Vector2(dirc, 1) * 7, ForceMode2D.Impulse);
+
+        anim.SetTrigger("Damage");
+        Invoke("OffDamaged", 3);
+    }
+
+    void OffDamaged()
+    {
+        gameObject.layer = 10;
+        SpriteRenderer.color = new Color(1, 1, 1, 1);
+    }
 }
