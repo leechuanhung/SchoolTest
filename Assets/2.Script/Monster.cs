@@ -5,16 +5,17 @@ using UnityEngine;
 public class Monster : MonoBehaviour
 {
     Rigidbody2D rigid;
-    Animation anim;
+    Animator anim;
     SpriteRenderer spriteRenderer;
     BoxCollider2D colli;
-
+    
+    public float destroyDelay = 2f; // 삭제될 때까지의 지연 시간
     public int nextMove;
 
     void Awake()
     {
         rigid = GetComponent<Rigidbody2D>();
-        anim = GetComponent<Animation>();
+        anim = GetComponent<Animator>();
         spriteRenderer = GetComponent<SpriteRenderer>();
         colli = GetComponent<BoxCollider2D>();
         Think();
@@ -79,21 +80,23 @@ public class Monster : MonoBehaviour
 
     public void OnDamaged()
     {
-        //Sprite Alpha
+        /*//Sprite Alpha
         spriteRenderer.color = new Color(1, 1, 1, 0.59f);
         //Sprite Flip Y
-        spriteRenderer.flipY = true;
+        spriteRenderer.flipY = true;*/
         // Collider Disable
         colli.enabled = false;
         //Die Effect Jump
-        rigid.AddForce(Vector2.up * 5, ForceMode2D.Impulse);
+        //rigid.AddForce(Vector2.up * 5, ForceMode2D.Impulse);
         //Destroy
+        anim.SetTrigger("Die");
         Invoke("DeActive", 5);
     }
 
     void DeActive()
     {
         gameObject.SetActive(false);
+        Destroy(gameObject);
     }
 
 }

@@ -6,23 +6,53 @@ public class Player : MonoBehaviour
     public float maxSpeed = 6f;
     private bool isGrounded = true;    // 플레이어가 땅에 닿아 있는지 확인
     public float Speed = 5f;    //움직이는 힘
-    
+    public GameManager gm;
+    public Collider2D col;
+    public AudioClip audioJump;
+    public AudioClip audioAttack;
+    public AudioClip audioDamaged;
+    public AudioClip audioItem;
+    public AudioClip audioDie;
+    public AudioClip audioFinish;
+
 
     Rigidbody2D rb;
     SpriteRenderer SpriteRenderer;
     Animator anim;
-    
+    AudioSource audio;
 
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
         SpriteRenderer = GetComponent<SpriteRenderer>();
         anim = GetComponent<Animator>();
+        col = GetComponent<Collider2D>();
+        audio = GetComponent<AudioSource>();
     }
 
-    private void Start()
+    void PlaySound(string action)
     {
-        
+        switch (action)
+        {
+            case "Jumap":
+                audio.clip = audioJump;
+                break;
+            case "Attack":
+                audio.clip = audioAttack;
+                break;
+            case "Damaged":
+                audio.clip = audioDamaged;
+                break;
+            case "Item":
+                audio.clip = audioItem;
+                break;
+            case "Die":
+                audio.clip = audioDie;
+                break;
+            case "Finish":
+                audio.clip = audioFinish;
+                break;
+        }
     }
 
     private void FixedUpdate()
@@ -48,6 +78,7 @@ public class Player : MonoBehaviour
         {
             Jump();
             anim.SetTrigger("Jump");
+            PlaySound("Jump");
             //anim.SetBool("isJump", !isGrounded);
         }
         /*if(Input.GetKeyDown(KeyCode.Z))
@@ -64,19 +95,44 @@ public class Player : MonoBehaviour
         {
             isGrounded = true; //땅에 닿으면 다시 점프 가능
         }
-        if(collision.gameObject.tag == "Enemy")
+        if (collision.gameObject.tag == "Enemy")
         {
             //Attack
-            if(rb.velocity.y < 0 &&  transform.position.y > collision.transform.position.y)
+            if (rb.velocity.y < 0 && transform.position.y > collision.transform.position.y)
             {
                 OnAttack(collision.transform);
-            }  
-            else//Damaged
-            OnDamaged(collision.transform.position);
+                PlaySound("Attack");
+            }
+            else
+            {
+                //Damaged
+                OnDamaged(collision.transform.position);
+                PlaySound("Damaged");
+
+            }
 
         }
-        
+
     }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.gameObject.tag == "Item")
+        {
+            gm.stagePoint += 100;
+
+            //Deactive Item
+            collision.gameObject.SetActive(false);
+            PlaySound("Item");
+        }
+        else if (collision.gameObject.tag == "Finish")
+        {
+            //Next stage
+            gm.NextStage();
+            PlaySound("Finish");
+        }
+    }
+
     void Jump()
     {
         //Rigidbody에 위로 힘을 가해 점프 처리
@@ -93,14 +149,14 @@ public class Player : MonoBehaviour
         {
             transform.Translate(Vector2.right * Speed * Time.deltaTime);
             anim.SetBool("Run", true);
-            
+
 
         }
         else if (Input.GetKey(KeyCode.LeftArrow))
         {
             transform.Translate(Vector2.left * Speed * Time.deltaTime);
             anim.SetBool("Run", true);
-            
+
 
         }
         else
@@ -120,12 +176,15 @@ public class Player : MonoBehaviour
         if (Input.GetKey(KeyCode.RightArrow))
             SpriteRenderer.flipX = false;
     }
-   
+
     void OnDamaged(Vector2 targetPos)
     {
+        //Health Down
+        gm.HealthDown();
+
         gameObject.layer = 11;
 
-        SpriteRenderer.color = new Color(1, 1, 1, 0.59f);
+        SpriteRenderer.color = new UnityEngine.Color(1, 1, 1, 0.59f);
 
         int dirc = transform.position.x - targetPos.x > 0 ? 1 : -1;
         rb.AddForce(new Vector2(dirc, 1) * 7, ForceMode2D.Impulse);
@@ -137,17 +196,34 @@ public class Player : MonoBehaviour
     void OffDamaged()
     {
         gameObject.layer = 10;
-        SpriteRenderer.color = new Color(1, 1, 1, 1);
+        SpriteRenderer.color = new UnityEngine.Color(1, 1, 1, 1);
     }
 
     void OnAttack(Transform enemy)
     {
         //Point
-
+        gm.stagePoint += 100;
         //Reaction Force
         rb.AddForce(Vector2.up * 10, ForceMode2D.Impulse);
         //Enemy Die
         Monster enemyMove = enemy.GetComponent<Monster>();
         enemyMove.OnDamaged();
+    }
+
+    public void OnDie()
+    {
+        //Sprite Alpha
+        SpriteRenderer.color = new UnityEngine.Color(1, 1, 1, 0.59f);
+        //Sprite Flip Y
+        SpriteRenderer.flipY = true;
+        // Collider Disable
+        col.enabled = false;
+        //Die Effect Jump
+        rb.AddForce(Vector2.up * 5, ForceMode2D.Impulse);
+    }
+
+    public void VelocityZero()
+    {
+        rb.velocity = Vector2.zero;
     }
 }
