@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
-    public float jumpForce = 5f;       // 점프 힘
+    public float jumpForce = 10f;       // 점프 힘
     public float maxSpeed = 6f;
     private bool isGrounded = true;    // 플레이어가 땅에 닿아 있는지 확인
     public float Speed = 5f;    //움직이는 힘
@@ -67,10 +67,11 @@ public class Player : MonoBehaviour
         if(collision.gameObject.tag == "Enemy")
         {
             //Attack
-            if(rb.velocity.y <0 &&  transform.position.y > collision.transform.position.y)
+            if(rb.velocity.y < 0 &&  transform.position.y > collision.transform.position.y)
             {
-
-            }  //Damaged
+                OnAttack(collision.transform);
+            }  
+            else//Damaged
             OnDamaged(collision.transform.position);
 
         }
@@ -141,6 +142,10 @@ public class Player : MonoBehaviour
 
     void OnAttack(Transform enemy)
     {
+        //Point
+
+        //Reaction Force
+        rb.AddForce(Vector2.up * 10, ForceMode2D.Impulse);
         //Enemy Die
         Monster enemyMove = enemy.GetComponent<Monster>();
         enemyMove.OnDamaged();
