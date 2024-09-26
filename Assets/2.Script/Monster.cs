@@ -53,6 +53,13 @@ public class Monster : MonoBehaviour
             float rotationY = (nextMove == 1) ? 0f : 180f; // 0도 또는 180도 회전
             transform.rotation = Quaternion.Euler(0, rotationY, 0); // Y축 기준 회전
         }
+        /*// 스프라이트 회전 대신 localScale로 처리
+        if (nextMove != 0)
+        {
+            Vector3 scale = transform.localScale;
+            scale.x = (nextMove == 1) ? Mathf.Abs(scale.x) : -Mathf.Abs(scale.x); // x축 반전
+            transform.localScale = scale; // X축 기준 반전
+        }*/
 
 
         //Recursive
