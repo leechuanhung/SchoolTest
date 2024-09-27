@@ -17,7 +17,7 @@ public class GameManager : MonoBehaviour
     public TextMeshProUGUI UIPoint;
     public TextMeshProUGUI UIStage;
     public TextMeshProUGUI remaindertime;
-    private float timer = 4f;
+    private float timer = 200f;
 
     private void Update()
     {
