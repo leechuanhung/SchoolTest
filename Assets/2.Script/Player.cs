@@ -226,4 +226,9 @@ public class Player : MonoBehaviour
     {
         rb.velocity = Vector2.zero;
     }
+
+    public void Dieanim()
+    {
+        anim.SetTrigger("Damage");
+    }
 }

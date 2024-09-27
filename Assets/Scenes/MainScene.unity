@@ -1436,6 +1436,7 @@ MonoBehaviour:
   totalPoint: 0
   stagePoint: 0
   stageIndex: 0
+  time: 0
   health: 3
   player: {fileID: 743409140}
   Stages: []

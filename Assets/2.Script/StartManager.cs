@@ -10,7 +10,7 @@ public class StartManager : MonoBehaviour
 
     void Start()
     {
-       
+        Invoke("StartScene", 5f);
     }
 
     void Update()
@@ -19,7 +19,14 @@ public class StartManager : MonoBehaviour
         {
             SceneManager.LoadScene("MainScene");
         }
+        if (Input.anyKeyDown)
+        {
+            SceneManager.LoadScene("StartScene");
+        }
+    }
+    private void LoadStartScene()
+    {
+        SceneManager.LoadScene("StartScene");
     }
 
-    
 }

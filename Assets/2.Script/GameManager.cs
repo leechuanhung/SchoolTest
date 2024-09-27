@@ -8,6 +8,7 @@ public class GameManager : MonoBehaviour
     public int totalPoint;
     public int stagePoint;
     public int stageIndex;
+    public int time;
     public int health;
     public Player player;
     public GameObject[] Stages;
@@ -16,10 +17,21 @@ public class GameManager : MonoBehaviour
     public TextMeshProUGUI UIPoint;
     public TextMeshProUGUI UIStage;
     public TextMeshProUGUI remaindertime;
+    private float timer = 4f;
 
     private void Update()
     {
         UIPoint.text = (totalPoint + stagePoint).ToString();
+        timer -= Time.deltaTime;
+        remaindertime.text = " " + Mathf.Max(timer, 0).ToString("F2") + " ";
+        if (timer <= 0f)
+        {
+            timer = 0f; // 타이머를 0으로 설정
+            player.OnDie();
+            player.VelocityZero();
+            player.Dieanim();
+            SceneManager.LoadScene("OverScene");
+        }
     }
 
     public void NextStage()
@@ -91,4 +103,5 @@ public class GameManager : MonoBehaviour
         player.transform.position = new Vector3(0, 0, -1);
         player.VelocityZero();
     }
+
 }
