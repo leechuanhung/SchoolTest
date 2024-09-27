@@ -18,7 +18,7 @@ public class GameManager : MonoBehaviour
     public TextMeshProUGUI UIStage;
     public TextMeshProUGUI remaindertime;
     private float timer = 200f;
-
+    
     private void Update()
     {
         UIPoint.text = (totalPoint + stagePoint).ToString();

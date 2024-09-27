@@ -7,7 +7,7 @@ public class Player : MonoBehaviour
     private bool isGrounded = true;    // 플레이어가 땅에 닿아 있는지 확인
     public float Speed = 5f;    //움직이는 힘
     public GameManager gm;
-    public Collider2D col;
+    Collider2D col;
     public AudioClip audioJump;
     public AudioClip audioAttack;
     public AudioClip audioDamaged;
@@ -19,7 +19,7 @@ public class Player : MonoBehaviour
     Rigidbody2D rb;
     SpriteRenderer SpriteRenderer;
     Animator anim;
-    AudioSource audio;
+    AudioSource audioSource;
 
     private void Awake()
     {
@@ -27,33 +27,10 @@ public class Player : MonoBehaviour
         SpriteRenderer = GetComponent<SpriteRenderer>();
         anim = GetComponent<Animator>();
         col = GetComponent<Collider2D>();
-        audio = GetComponent<AudioSource>();
+        audioSource = GetComponent<AudioSource>();
     }
 
-    void PlaySound(string action)
-    {
-        switch (action)
-        {
-            case "Jumap":
-                audio.clip = audioJump;
-                break;
-            case "Attack":
-                audio.clip = audioAttack;
-                break;
-            case "Damaged":
-                audio.clip = audioDamaged;
-                break;
-            case "Item":
-                audio.clip = audioItem;
-                break;
-            case "Die":
-                audio.clip = audioDie;
-                break;
-            case "Finish":
-                audio.clip = audioFinish;
-                break;
-        }
-    }
+   
 
     private void FixedUpdate()
     {
@@ -78,7 +55,7 @@ public class Player : MonoBehaviour
         {
             Jump();
             anim.SetTrigger("Jump");
-            PlaySound("Jump");
+            PlaySound("JUMP");
             //anim.SetBool("isJump", !isGrounded);
         }
         /*if(Input.GetKeyDown(KeyCode.Z))
@@ -107,7 +84,7 @@ public class Player : MonoBehaviour
             {
                 //Damaged
                 OnDamaged(collision.transform.position);
-                PlaySound("Damaged");
+                PlaySound("DAMAGE");
 
             }
 
@@ -123,13 +100,13 @@ public class Player : MonoBehaviour
 
             //Deactive Item
             collision.gameObject.SetActive(false);
-            PlaySound("Item");
+            PlaySound("ITEM");
         }
         else if (collision.gameObject.tag == "Finish")
         {
             //Next stage
             gm.NextStage();
-            PlaySound("Finish");
+            PlaySound("FINISH");
         }
     }
 
@@ -190,6 +167,7 @@ public class Player : MonoBehaviour
         rb.AddForce(new Vector2(dirc, 1) * 7, ForceMode2D.Impulse);
 
         anim.SetTrigger("Damage");
+        PlaySound("DAMAGE");
         Invoke("OffDamaged", 3);
     }
 
@@ -208,6 +186,7 @@ public class Player : MonoBehaviour
         //Enemy Die
         Monster enemyMove = enemy.GetComponent<Monster>();
         enemyMove.OnDamaged();
+        PlaySound("ATTACK");
     }
 
     public void OnDie()
@@ -220,6 +199,7 @@ public class Player : MonoBehaviour
         col.enabled = false;
         //Die Effect Jump
         rb.AddForce(Vector2.up * 5, ForceMode2D.Impulse);
+        PlaySound("DAMAGE");
     }
 
     public void VelocityZero()
@@ -230,5 +210,32 @@ public class Player : MonoBehaviour
     public void Dieanim()
     {
         anim.SetTrigger("Damage");
+    }
+
+    void PlaySound(string action)
+    {
+        switch (action)
+        {
+            case "JUMP":
+                audioSource.clip = audioJump;
+                break;
+            case "ATTACK":
+                audioSource.clip = audioAttack;
+                break;
+            case "DAMAGE":
+                audioSource.clip = audioDamaged;
+                break;
+            case "ITEM":
+                audioSource.clip = audioItem;
+                break;
+            case "DIE":
+                audioSource.clip = audioDie;
+                break;
+            case "FINISH":
+                audioSource.clip = audioFinish;
+                break;
+        }
+        audioSource.PlayOneShot(audioSource.clip);
+
     }
 }

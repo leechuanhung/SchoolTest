@@ -19,14 +19,13 @@ public class StartManager : MonoBehaviour
         {
             SceneManager.LoadScene("MainScene");
         }
+    }
+    private void LoadStartScene()
+    {
         if (Input.anyKeyDown)
         {
             SceneManager.LoadScene("StartScene");
         }
-    }
-    private void LoadStartScene()
-    {
-        SceneManager.LoadScene("StartScene");
     }
 
 }
