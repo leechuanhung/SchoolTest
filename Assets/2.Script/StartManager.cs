@@ -1,12 +1,9 @@
-using System.Collections;
-using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.UI;
 
 public class StartManager : MonoBehaviour
 {
-    
+
 
     void Start()
     {
@@ -19,13 +16,9 @@ public class StartManager : MonoBehaviour
         {
             SceneManager.LoadScene("MainScene");
         }
+        else if (Input.GetKeyDown(KeyCode.Escape))
+            Application.Quit();
     }
-    private void LoadStartScene()
-    {
-        if (Input.anyKeyDown)
-        {
-            SceneManager.LoadScene("StartScene");
-        }
-    }
+
 
 }

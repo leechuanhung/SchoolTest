@@ -18,7 +18,7 @@ public class GameManager : MonoBehaviour
     public TextMeshProUGUI UIStage;
     public TextMeshProUGUI remaindertime;
     private float timer = 200f;
-    
+
     private void Update()
     {
         UIPoint.text = (totalPoint + stagePoint).ToString();
@@ -59,6 +59,14 @@ public class GameManager : MonoBehaviour
         stagePoint = 0;
     }
 
+
+    void BackStart()
+    {
+        if (Input.anyKeyDown)
+        {
+            SceneManager.LoadScene("StartScene");
+        }
+    }
     public void HealthDown()
     {
         if (health > 1)
@@ -77,30 +85,20 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    void BackStart()
-    {
-        if(Input.anyKeyDown)
-        {
-            SceneManager.LoadScene("StartScene");
-        }
-    }
-
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        //Health Down
-        HealthDown();
 
         //Player Reposition
         if (health > 1)
-        {
             PlayerReposition();
 
-        }
+        //Health Down
+        HealthDown();
     }
 
     void PlayerReposition()
     {
-        player.transform.position = new Vector3(0, 0, -1);
+        player.transform.position = new Vector3(-17, 0, -1);
         player.VelocityZero();
     }
 
